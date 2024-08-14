@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Table</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Project Details</h1>
+<table id="projectsTable">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Technologies Used</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Dynamic content will be added here -->
+    </tbody>
+</table>
+
+<script>
+    // Fetch the XML data
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "projects.xml", true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const xml = xhr.responseXML;
+            const projects = xml.getElementsByTagName("project");
+            const tableBody = document.querySelector("#projectsTable tbody");
+
+            
+            for (let i = 0; i < projects.length; i++) {
+                const title = projects[i].getElementsByTagName("title")[0].textContent;
+                const description = projects[i].getElementsByTagName("description")[0].textContent;
+                const technologies = projects[i].getElementsByTagName("technologies")[0];
+                const techList = Array.from(technologies.getElementsByTagName("technology"))
+                                      .map(tech => tech.textContent)
+                                      .join(", ");
+
+                const row = `<tr>
+                                <td>${title}</td>
+                                <td>${description}</td>
+                                <td>${techList}</td>
+                             </tr>`;
+                tableBody.innerHTML += row;
+            }
+        }
+    };
+    xhr.send();
+</script>
+
+</body>
+</html>
